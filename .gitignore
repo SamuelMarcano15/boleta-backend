@@ -1,0 +1,33 @@
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Databases and Schemas
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+schema.sql
+
+# Binaries and compiled files
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+backend
+main
+
+# Go specific
+vendor/
+
+# User uploads
+uploads/
+
+# IDEs and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
