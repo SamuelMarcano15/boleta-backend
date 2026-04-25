@@ -40,4 +40,7 @@ type Usuario struct {
 	FechaRegistro     time.Time `gorm:"autoCreateTime" json:"fecha_registro"`
 
 	Fotos []FotoPerfil `gorm:"foreignKey:FUsuario" json:"fotos"`
+
+	Correo string `gorm:"uniqueIndex;not null" json:"correo"`
+	Clave  string `gorm:"not null" json:"-"`
 }

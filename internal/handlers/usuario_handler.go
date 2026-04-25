@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/SamuelMarcano15/boleta-backend/internal/models"
 	"github.com/SamuelMarcano15/boleta-backend/internal/repository"
+	"github.com/SamuelMarcano15/boleta-backend/internal/security"
 )
 
 // RegistroUsuarioDTO define exactamente que campos esperamos del frontend.
@@ -25,6 +26,9 @@ type RegistroUsuarioDTO struct{
 	OrientacionSexual  *string  `json:"orientacion_sexual"`
 	EstadoProvincia    *string  `json:"estado_provincia"`
 	Telefono           *string  `json:"telefono"`
+
+	Correo string `json:"correo" binding:"required,email"`
+	Clave  string `json:"clave" binding:"required,min=6"`
 }
 
 // PreferenciasDTO define qué campos del algoritmo se pueden modificar
@@ -56,6 +60,12 @@ func CrearUsuario(c *gin.Context){
 		return
 	}
 
+	hash, err := security.HashearClave(input.Clave)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al procesar la contraseña"})
+		return
+	}
+
 	
 
 	// 3. Mapear el DTO a nuestro Modelo Real
@@ -69,6 +79,8 @@ func CrearUsuario(c *gin.Context){
 		Telefono:          input.Telefono,
 		BuscandoGenero:    input.BuscandoGenero,
 		BuscandoIntencion: input.BuscandoIntencion,
+		Correo:            input.Correo,
+		Clave:             hash,
 		// Los valores por defecto (como rangos de edad) los pondrá Postgres/GORM
 	}
 

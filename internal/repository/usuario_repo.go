@@ -31,3 +31,12 @@ func ObtenerUsuarioPorID(id string) (*models.Usuario, error) {
 	return &usuario, result.Error
 }
 
+func ObtenerUsuarioPorCorreo(correo string) (*models.Usuario, error) {
+	var usuario models.Usuario
+	
+	// GORM hace un: SELECT * FROM usuarios WHERE correo = '...' LIMIT 1
+	result := DB.Where("correo = ?", correo).First(&usuario)
+	
+	return &usuario, result.Error
+}
+
