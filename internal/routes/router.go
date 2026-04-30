@@ -32,11 +32,13 @@ func SetupRouter(r *gin.Engine) {
 		// 🟢 ZONA PÚBLICA (No requiere Token)
 		// ==========================================
 		auth := v1.Group("/auth")
+		auth.Use(middleware.LimitadorPublico())
 		{
 			auth.POST("/login", handlers.Login)
 		}
 
 		usuariosPublicos := v1.Group("/usuarios")
+		usuariosPublicos.Use(middleware.LimitadorPublico())
 		{
 			usuariosPublicos.POST("/", handlers.CrearUsuario) // Registro
 		}
@@ -46,6 +48,7 @@ func SetupRouter(r *gin.Engine) {
 		// ==========================================
 		protegido := v1.Group("/")
 		protegido.Use(middleware.AuthRequerido()) // <-- ¡El Cadenero se pone aquí!
+		protegido.Use(middleware.LimitadorProtegido())
 		{
 			// Todo lo que esté dentro de este bloque, pedirá Token obligatoriamente
 
@@ -75,6 +78,6 @@ func SetupRouter(r *gin.Engine) {
 
 		// Nota: El WebSocket a veces requiere una validación de token distinta 
 		// (por query param en vez de header), por ahora lo dejamos libre
-		v1.GET("/ws/:id_usuario", handlers.ConectarWebSocket)
+		v1.GET("/ws/:id_usuario", middleware.LimitadorWebSocket(), handlers.ConectarWebSocket)
 	}
 }
